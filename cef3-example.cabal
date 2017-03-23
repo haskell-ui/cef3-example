@@ -22,9 +22,9 @@ Executable cef3-example
 
   build-depends:     base                  >= 4.7
                ,     cef3-simple           == 0.1.*
+               ,     protolude
                ,     threepenny-gui
                ,     optparse-applicative
 
   if os(windows)
     ghc-options:     -optl-mwindows
-

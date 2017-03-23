@@ -13,24 +13,34 @@ build: off
 
 install:
   - git submodule update --init --recursive
-  - set PATH=%PATH%;C:\bin
-  - mkdir C:\bin
-  - appveyor DownloadFile https://winampplugins.co.uk/curl/curl_7_53_1_openssl_nghttp2_x64.7z -FileName curl.7z
-  - 7z x curl.7z > NUL
-  - move curl.exe C:\bin\ > NUL
-  - move ca-bundle.crt C:\bin\ > NUL
   - curl -s -ostack.zip -L --insecure http://www.stackage.org/stack/windows-x86_64
   - 7z x stack.zip stack.exe > NUL
-  - move stack.exe C:\bin\ > NUL
-  - .\cef3-raw\scripts\setup.bat
+  - set PATH=%PATH%;C:\Stack
+  - mkdir C:\Stack
+  - move stack.exe C:\Stack\
+  - .\cef3-simple\cef3-raw\scripts\setup.bat
 
 build_script:
   - stack setup --skip-msys --no-terminal > NUL
-  - cd cef3-raw
+  - cd cef3-simple\cef3-raw
   - .\scripts\configure.bat
-  - cd ..
-  - stack build
+  - cd ..\..
+  - stack install
+
+after_build:
+  - mkdir result
+  - xcopy /E /Q %CEF3_PATH%\Release\* result\
+  - xcopy /E /Q %CEF3_PATH%\Resources\* result\
+  - xcopy /Q %APPDATA%\local\bin\cef3-example.exe result\
+  - dir result
+  - cd result
+  - 7z a cef3-example.7z *
+
+artifacts:
+  - path: result\cef3-example.7z
+    name: Full App
+  - path: result\cef3-example.exe
+    name: Exe Only
 
 cache:
   - C:\sr -> .appveyor.yml
-

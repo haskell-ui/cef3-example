@@ -10,12 +10,12 @@ optParser :: Parser Options
 optParser = Options
     <$> option auto optPort
     where
-    optPort = mconcat $
+    optPort = mconcat
         [ short 'p'
         , long "port"
         , showDefault
         , value 8099
-        , metavar "INT"
+        , metavar "PORT"
         , help "Server port"
         ]
 
