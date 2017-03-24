@@ -25,6 +25,7 @@ Executable cef3-example
                ,     protolude
                ,     threepenny-gui
                ,     optparse-applicative
+               ,     time
 
   if os(windows)
     ghc-options:     -optl-mwindows

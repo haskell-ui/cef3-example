@@ -2,9 +2,13 @@ module Options where
 
 import Options.Applicative
 
+--------------------------------------------------------------------------------
+
 data Options = Options
    { port           :: Int
    }
+
+--------------------------------------------------------------------------------
 
 optParser :: Parser Options
 optParser = Options
