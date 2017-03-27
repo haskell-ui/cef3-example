@@ -15,9 +15,8 @@ mkDerivation {
   license = stdenv.lib.licenses.bsd3;
   buildTools = [ wget ];
   postInstall = ''
-    wget --no-check-certificate https://raw.githubusercontent.com/Semantic-Org/Semantic-UI-CSS/7ad02f2fb9e50087fcb02bc1fba05e900488381c/semantic.min.css
     mkdir -p $out/bin/static/css
-    mv semantic.min.css $out/bin/static/css/
+    mv resources/semantic.min.css $out/bin/static/css/
     ln -s ${libcef3}/bin/locales $out/bin/
   '';
 }
