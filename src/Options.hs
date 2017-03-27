@@ -1,17 +1,19 @@
+{-# Language OverloadedStrings #-}
 module Options (module Options) where
 
 import Options.Applicative
+import Control.Monad (void)
+import System.Environment (getArgs)
 import Text.Printf (printf)
 import Text.Read (readMaybe)
 import Data.Time (NominalDiffTime)
-import Data.Maybe (listToMaybe, fromMaybe, catMaybes)
+import Data.Maybe (listToMaybe, fromMaybe, catMaybes, fromJust)
 import Data.List.Split (splitOn)
 import Data.Char (toLower)
 import Data.Colour (Colour)
 import Data.Colour.SRGB (sRGB24reads, sRGB24read)
-import Data.Colour.Names (readColourName)
-
-import Data.Colour.Names as Options (white)
+import Data.Colour.Names (readColourName, white)
+import Text.PrettyPrint.ANSI.Leijen (vsep)
 
 --------------------------------------------------------------------------------
 
@@ -45,25 +47,39 @@ optParser = Options
     optTimer = strOption $ mconcat
         [ short 't'
         , long "timer"
-        , help "Timer startup string"
-        ]
+        , helpDoc (Just timerHelp) ]
+    timerHelp = vsep
+        [ "Timer startup string of format hh:mm:ss and optional"
+        , "color name or hex color code, ie. #00b5ad. For example:"
+        , "  --timer 10:03:00 -t 0:5:0 red"
+        , "  --timer 00:03:00 #e67b9e" ]
 
 parseTimers :: [String] -> [TimerSetup]
-parseTimers args = catMaybes $ zipWith parseSetup palette args
+parseTimers args = setDefault . catMaybes $ zipWith parseSetup palette args
+    where
+    setDefault [] =
+        [ parseSetupUnsafe "3:00:00 #00b5ad"
+        , parseSetupUnsafe "1:30:00 #e67b9e" ]
+    setDefault as = as
 
 palette :: [Color]
 palette = cycle $ map sRGB24read
-      [ "#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd"
-      , "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf"]
+      [ "#00b5ad", "#e67b9e", "#1f77b4", "#ff7f0e", "#2ca02c", "#d62728"
+      , "#9467bd", "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf"]
 
 getOptions :: IO Options
-getOptions = execParser opts
+getOptions = execParser optionsParserInfo
+
+optionsParserInfo :: ParserInfo Options
+optionsParserInfo = info (optParser <**> helper) $ mconcat
+    [ fullDesc, progDesc description
+    , footerDoc $ Just explanation ]
     where
-    opts = info (optParser <**> helper) $ mconcat
-            [ fullDesc
-            , progDesc "Starts the timer server"
-            , header "CountDown - timer program"
-            ]
+    description = "Starts the timer board with specified timers"
+    explanation = vsep
+        [ "When run without any timers specified the default will be:"
+        , "  tmr --timer 3:00:00 #00b5ad"
+        , "      --timer 1:30:00 #e67b9e" ]
 
 --------------------------------------------------------------------------------
 
@@ -112,4 +128,7 @@ parseSetup defaultColor setup = case words setup of
     [time, color] -> TimerSetup <$> parseTime time <*> parseColor color
     [time]        -> TimerSetup <$> parseTime time <*> pure defaultColor
     _             -> Nothing
+
+parseSetupUnsafe :: String -> TimerSetup
+parseSetupUnsafe = fromJust . parseSetup white
 
