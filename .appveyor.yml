@@ -28,18 +28,19 @@ build_script:
   - stack install
 
 after_build:
-  - mkdir result
+  - md result\static\css
   - xcopy /E /Q %CEF3_PATH%\Release\* result\
   - xcopy /E /Q %CEF3_PATH%\Resources\* result\
-  - xcopy /Q %APPDATA%\local\bin\cef3-example.exe result\
+  - xcopy /Q %APPDATA%\local\bin\tmr.exe result\
+  - xcopy /Q resources\semantic.min.css result\static\css
   - dir result
   - cd result
-  - 7z a cef3-example.7z *
+  - 7z a tmr.7z *
 
 artifacts:
-  - path: result\cef3-example.7z
+  - path: result\tmr.7z
     name: Full App
-  - path: result\cef3-example.exe
+  - path: result\tmr.exe
     name: Exe Only
 
 cache:
