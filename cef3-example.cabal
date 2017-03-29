@@ -31,5 +31,8 @@ Executable tmr
                ,     split
                ,     colour
 
-  if os(windows)
-    ghc-options:     -optl-mwindows
+  -- if os(windows)
+    -- ghc-options:     -optl-mwindows
+
+  other-modules:     Options
+                     View

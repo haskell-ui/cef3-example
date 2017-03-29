@@ -1,4 +1,4 @@
-{ nixpkgs ? import <nixpkgs> {}, compiler ? "ghc801" }:
+{ nixpkgs ? import <nixpkgs> {}, compiler ? "ghc802" }:
 let libcef3 = with nixpkgs; callPackage cef3-simple/cef3-raw/libcef3.nix {};
     hpkgs = nixpkgs.haskell.packages.${compiler}.override {
       overrides = self: super: {

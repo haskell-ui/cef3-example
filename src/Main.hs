@@ -32,6 +32,7 @@ startCountDown opts = do
             , jsStatic = Just $ ep ++ "/static"  }
     eventTime <- timer
     void $ forkIO $ startGUI config $ setup eventTime (optionTimers opts)
+    threadDelay 5000
 
 setup :: Event Timer -> [TimerSetup] -> Window -> UI ()
 setup eventTime timerSetups win = do

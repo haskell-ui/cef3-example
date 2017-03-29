@@ -1,6 +1,8 @@
 
 language: nix
-script: nix-build default.nix
+script: nix-build default.nix --argstr compiler $GHC_VERSION
+env:
+  - GHC_VERSION=ghc802
 
 before_install:
   - >
@@ -17,3 +19,7 @@ before_install:
         echo "Only docs were updated, stopping build process."
         exit
       fi
+
+cache:
+  directories:
+    - /nix

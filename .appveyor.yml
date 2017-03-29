@@ -36,11 +36,12 @@ after_build:
   - dir result
   - cd result
   - 7z a tmr.7z *
+  - 7z a tmr-exe.7z tmr.exe
 
 artifacts:
   - path: result\tmr.7z
     name: Full App
-  - path: result\tmr.exe
+  - path: result\tmr-exe.7z
     name: Exe Only
 
 cache:
