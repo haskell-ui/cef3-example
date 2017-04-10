@@ -47,21 +47,21 @@ optParser = Options
     optTimer = strOption $ mconcat
         [ short 't'
         , long "timer"
-        , metavar "TIME COLOR"
+        , metavar "TIME(;COLOR)"
         , helpDoc (Just timerHelp) ]
     timerHelp = vsep
         [ "Timer startup string of format hh:mm:ss and"
         , "optional color name or hex color code, ie. #0ba"
         , "For example:"
-        , "  --timer 10:03:00 -t 0:5:0 red"
-        , "  --timer 00:03:00 #e67b9e" ]
+        , "  --timer 10:03:00 -t 0:5:0;red"
+        , "  --timer 00:03:00;#e67b9e" ]
 
 parseTimers :: [String] -> [TimerSetup]
 parseTimers = setDefault . catMaybes . zipWith parseSetup palette
     where
     setDefault [] =
-        [ parseSetupUnsafe "3:00:00 #00b5ad"
-        , parseSetupUnsafe "1:30:00 #e67b9e" ]
+        [ parseSetupUnsafe "3:00:00;#00b5ad"
+        , parseSetupUnsafe "1:30:00;#e67b9e" ]
     setDefault as = as
 
 palette :: [Color]
@@ -80,8 +80,8 @@ optionsParserInfo = info (optParser <**> helper) $ mconcat
     description = "Starts the timer board with specified timers"
     explanation = vsep
         [ "When run without any timers specified the default will be:"
-        , "  tmr --timer 3:00:00 #00b5ad"
-        , "      --timer 1:30:00 #e67b9e" ]
+        , "  tmr --timer 3:00:00;#00b5ad"
+        , "      --timer 1:30:00;#e67b9e" ]
 
 --------------------------------------------------------------------------------
 
@@ -126,7 +126,7 @@ parseColorDef def = fromMaybe def . parseColor
 --------------------------------------------------------------------------------
 
 parseSetup :: Color -> String -> Maybe TimerSetup
-parseSetup defaultColor setup = case words setup of
+parseSetup defaultColor setup = case splitOn ";" setup of
     [time, color] -> TimerSetup <$> parseTime time <*> parseColor color
     [time]        -> TimerSetup <$> parseTime time <*> pure defaultColor
     _             -> Nothing
