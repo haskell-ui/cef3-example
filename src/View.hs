@@ -7,14 +7,24 @@ import qualified Graphics.UI.Threepenny as UI
 --------------------------------------------------------------------------------
 
 button cl label = UI.button #. cl # set text label
-buttonStop      = button "ui left  attached      small button" "Start"
+buttonStart     = button "ui left  attached      small button" "Start"
 buttonReset     = button "ui right attached grey small button" "Reset"
 buttonGroup bts = UI.div #. "ui right floated right aligned column"
                 # set children bts
 
-display = UI.div #. "ui left floated left aligned column"
-content = UI.div #. "ui two column grid"
-segment = UI.div #. "ui middle aligned segment"
+displayText txt = UI.h1 # set text txt
+display dt = UI.div
+    #. "ui left floated left aligned column"
+    #+ [ element dt ]
+
+content st cn = UI.div
+    #. "ui two column grid"
+    # set style st
+    # set children cn
+segment c = UI.div
+    #. "ui middle aligned segment"
+    # set children [ c ]
+
 
 centerGrid :: [Element] -> UI Element
 centerGrid ls = do

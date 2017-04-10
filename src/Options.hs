@@ -47,15 +47,17 @@ optParser = Options
     optTimer = strOption $ mconcat
         [ short 't'
         , long "timer"
+        , metavar "TIME COLOR"
         , helpDoc (Just timerHelp) ]
     timerHelp = vsep
-        [ "Timer startup string of format hh:mm:ss and optional"
-        , "color name or hex color code, ie. #00b5ad. For example:"
+        [ "Timer startup string of format hh:mm:ss and"
+        , "optional color name or hex color code, ie. #0ba"
+        , "For example:"
         , "  --timer 10:03:00 -t 0:5:0 red"
         , "  --timer 00:03:00 #e67b9e" ]
 
 parseTimers :: [String] -> [TimerSetup]
-parseTimers args = setDefault . catMaybes $ zipWith parseSetup palette args
+parseTimers = setDefault . catMaybes . zipWith parseSetup palette
     where
     setDefault [] =
         [ parseSetupUnsafe "3:00:00 #00b5ad"

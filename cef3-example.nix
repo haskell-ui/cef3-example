@@ -13,7 +13,6 @@ mkDerivation {
     ];
   description = "CEF3 bindings usage example";
   license = stdenv.lib.licenses.bsd3;
-  buildTools = [ wget ];
   postInstall = ''
     mkdir -p $out/bin/static/css
     mv resources/semantic.min.css $out/bin/static/css/

@@ -21,5 +21,6 @@ before_install:
       fi
 
 cache:
+  timeout: 300
   directories:
     - /nix
